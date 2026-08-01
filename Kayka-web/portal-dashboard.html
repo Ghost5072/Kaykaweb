@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Dashboard — Crestview College</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#142440;--navy-deep:#0b1730;
+    --gold:#c89b3c;--gold-light:#e6c878;
+    --paper:#f5efe0;--paper-deep:#eadfc2;
+    --ink:#20242c;--ink-soft:#5a6070;
+    --white:#fffdf8;
+    --green:#2f6b4f;--green-bg:#eaf3ee;
+    --amber-bg:#faf1de;
+    --radius:14px;
+    --shadow:0 18px 40px -20px rgba(11,23,48,.35);
+    --maxw:1100px;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3{font-family:'Fraunces',serif;color:var(--navy);margin:0;}
+  p{margin:0;}ul{margin:0;padding:0;list-style:none;}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  header{background:var(--navy);}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:var(--maxw);margin:0 auto;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-name{font-family:'Fraunces',serif;font-weight:700;font-size:16.5px;color:#fffdf8;line-height:1.1;}
+  .brand-name span{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,253,248,.5);font-weight:500;}
+  .role-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:5px 12px;border-radius:999px;color:var(--gold-light);margin-left:14px;}
+  .top-right{display:flex;align-items:center;gap:18px;}
+  .logout{font-size:13.5px;font-weight:600;color:rgba(255,253,248,.75);}
+  .logout:hover{color:#fffdf8;}
+
+  .welcome{padding:32px 0 0;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600;}
+  .welcome h1{font-size:clamp(22px,3vw,30px);margin-top:8px;}
+  .welcome p{margin-top:6px;color:var(--ink-soft);font-size:14.5px;}
+
+  /* ── Term tabs ── */
+  .term-strip{display:flex;gap:6px;padding:20px 0 0;flex-wrap:wrap;}
+  .term-tab{
+    padding:9px 20px;border-radius:999px;font-size:13.5px;font-weight:600;
+    border:1.5px solid var(--paper-deep);background:var(--white);color:var(--ink-soft);
+    cursor:pointer;transition:all .15s ease;
+  }
+  .term-tab:hover{border-color:var(--navy);color:var(--navy);}
+  .term-tab.active{background:var(--navy);color:#fffdf8;border-color:var(--navy);}
+
+  /* ── Grid & cards ── */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:22px 0 70px;}
+  .card{background:var(--white);border:1px solid var(--paper-deep);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+  .card-wide{grid-column:span 2;}
+  .card-full{grid-column:span 3;}
+  .card .icon{width:40px;height:40px;border-radius:10px;background:var(--navy);color:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;}
+  .card h3{font-size:17px;}
+  .card .sub{font-size:12.5px;color:var(--ink-soft);margin-top:4px;text-transform:uppercase;letter-spacing:.04em;font-family:'IBM Plex Mono',monospace;}
+
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13.5px;}
+  th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--paper-deep);}
+  th{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600;}
+  td.num{font-family:'IBM Plex Mono',monospace;}
+  td.total{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--navy);}
+
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:600;}
+  .pill-green{background:var(--green-bg);color:var(--green);}
+  .pill-amber{background:var(--amber-bg);color:#9a6b1f;}
+
+  .list-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--paper-deep);font-size:14px;}
+  .list-item:last-child{border-bottom:none;}
+  .list-item .meta{font-size:12px;color:var(--ink-soft);}
+  .announce{font-size:13.5px;padding:10px 0;border-bottom:1px solid var(--paper-deep);}
+  .announce:last-child{border-bottom:none;}
+  .announce .date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;}
+
+  /* ── Not available state ── */
+  .not-available{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 20px;text-align:center;gap:10px;}
+  .not-available .na-icon{font-size:36px;opacity:.35;}
+  .not-available h4{font-size:16px;color:var(--ink-soft);margin:0;}
+  .not-available p{font-size:13.5px;color:var(--ink-soft);opacity:.85;max-width:340px;}
+
+  /* ── Annual note ── */
+  .annual-note{background:var(--amber-bg);border-radius:10px;padding:10px 14px;font-size:12.5px;color:#9a6b1f;margin-top:14px;font-family:'IBM Plex Mono',monospace;}
+
+  /* ── Teacher: form class / gradebook ── */
+  .form-class-tag{display:inline-block;background:var(--amber-bg);color:#9a6b1f;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;margin-left:10px;vertical-align:middle;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;}
+  .subject-group{margin-top:16px;}
+  .subject-group h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .class-chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .class-chip{font-size:13px;font-weight:600;color:var(--navy);background:var(--paper);border:1.5px solid var(--paper-deep);padding:7px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s,border-color .15s;}
+  .class-chip:hover{background:var(--paper-deep);}
+  .class-chip.active{background:var(--navy);color:#fffdf8;border-color:var(--navy);}
+  .score-input{width:48px;padding:6px;border-radius:6px;border:1.5px solid var(--paper-deep);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;background:var(--paper);}
+  .score-input:focus{border-color:var(--gold);background:var(--white);}
+  .score-input:disabled{background:var(--paper-deep);color:var(--ink-soft);opacity:.8;}
+  .term-notice{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:rgba(20,36,64,.06);border:1px solid var(--paper-deep);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--ink-soft);}
+  .term-notice strong{color:var(--navy);}
+  .gradebook-actions{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .btn-mini{font-size:12.5px;font-weight:600;color:var(--navy);background:var(--paper);border:1px solid var(--paper-deep);padding:6px 12px;border-radius:8px;cursor:pointer;}
+  .btn-mini:hover{background:var(--paper-deep);}
+  .btn-mini-primary{background:var(--navy);color:#fffdf8;border-color:var(--navy);}
+  .btn-mini-primary:hover{background:var(--navy-deep);}
+  .gb-status{font-size:12.5px;font-weight:600;color:var(--green);display:none;align-items:center;gap:6px;}
+  .gb-status.show{display:inline-flex;}
+
+  .proto-note{background:rgba(20,36,64,.04);border:1px dashed var(--paper-deep);border-radius:12px;padding:14px 18px;font-size:13px;color:var(--ink-soft);}
+
+  @media(max-width:880px){
+    .grid{grid-template-columns:1fr 1fr;}
+    .card-wide,.card-full{grid-column:span 2;}
+  }
+  @media(max-width:600px){
+    .grid{grid-template-columns:1fr;}
+    .card-wide,.card-full{grid-column:span 1;}
+    .top-right .role-badge{display:none;}
+    .term-tab{padding:7px 14px;font-size:12.5px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <svg width="32" height="32" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M50 4 L92 20 V52 C92 76 73 92 50 98 C27 92 8 76 8 52 V20 Z" fill="none" stroke="#c89b3c" stroke-width="3"/>
+        <text x="50" y="62" font-family="Fraunces,serif" font-size="34" font-weight="700" fill="#e6c878" text-anchor="middle">CC</text>
+      </svg>
+      <div class="brand-name">Crestview College<span>Portal</span></div>
+    </div>
+    <div class="top-right">
+      <span class="role-badge" id="roleBadge">Student</span>
+      <a href="portal-login.html" class="logout">Log out →</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="welcome">
+    <span class="eyebrow" id="dateLine">Loading…</span>
+    <h1 id="welcomeHeading">Welcome back</h1>
+    <p id="welcomeSub"></p>
+  </div>
+
+  <!-- ══════════ STUDENT VIEW ══════════ -->
+  <div id="studentView" style="display:none;">
+    <div class="term-strip">
+      <button class="term-tab active" data-term="1st"    onclick="showTerm('1st')">1st Term</button>
+      <button class="term-tab"        data-term="2nd"    onclick="showTerm('2nd')">2nd Term</button>
+      <button class="term-tab"        data-term="3rd"    onclick="showTerm('3rd')">3rd Term</button>
+      <button class="term-tab"        data-term="annual" onclick="showTerm('annual')">Annual</button>
+    </div>
+
+    <div class="grid">
+      <div class="card card-full">
+        <div class="icon">📊</div>
+        <h3 id="resultsTitle">1st Term Results</h3>
+        <div class="sub" id="resultsSub"></div>
+        <div id="resultsContent"></div>
+      </div>
+
+      <div class="card">
+        <div class="icon">💳</div>
+        <h3>Fees</h3>
+        <div class="sub">2nd Term · 2025/2026</div>
+        <p style="margin-top:14px;"><span class="pill pill-green">Paid in full</span></p>
+        <p style="margin-top:10px;font-size:12.5px;color:var(--ink-soft);">Receipt issued 14 Apr 2026.</p>
+      </div>
+
+      <div class="card card-wide">
+        <div class="icon">🗓</div>
+        <h3>Today's timetable</h3>
+        <ul style="margin-top:12px;">
+          <li class="list-item"><span>Mathematics</span><span class="meta">8:00 – 8:40</span></li>
+          <li class="list-item"><span>Physics</span><span class="meta">8:40 – 9:20</span></li>
+          <li class="list-item"><span>English Language</span><span class="meta">9:40 – 10:20</span></li>
+        </ul>
+      </div>
+
+      <div class="card card-full">
+        <div class="icon">📣</div>
+        <h3>Announcements</h3>
+        <div class="announce"><span class="date">22 Jun 2026</span><p>Inter-House Sports holds this Friday — sportswear compulsory.</p></div>
+        <div class="announce"><span class="date">18 Jun 2026</span><p>SSS3 mock results released — see your form teacher.</p></div>
+        <div class="announce"><span class="date">10 Jun 2026</span><p>2nd term fees deadline extended to 30 June.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ TEACHER VIEW ══════════ -->
+  <div class="grid" id="teacherView" style="display:none;">
+
+    <div class="card card-full" id="formClassCard" style="display:none;">
+      <div class="icon">🏫</div>
+      <h3>My Form Class<span class="form-class-tag" id="formClassTag"></span></h3>
+      <div class="sub" id="formClassSub"></div>
+      <table id="formClassTable">
+        <tr><th>Student name</th><th>Reg number</th></tr>
+      </table>
+    </div>
+
+    <div class="card card-full">
+      <div class="icon">📚</div>
+      <h3>Subjects I teach</h3>
+      <div class="sub">Click a class to open its gradebook</div>
+      <div id="subjectGroups"></div>
+    </div>
+
+    <div class="card card-full" id="gradebookCard" style="display:none;">
+      <div class="icon">📝</div>
+      <h3 id="gbTitle">Gradebook</h3>
+      <div class="sub" id="gbSub"></div>
+      <div class="term-notice">Entering scores for: <strong id="gbTermLabel">2nd Term · 2025/2026</strong></div>
+      <table id="gbTable">
+        <tr><th>Student name</th><th>Reg no.</th><th>CA1 /20</th><th>CA2 /20</th><th>CA3 /20</th><th>Exam /40</th><th>Total</th></tr>
+      </table>
+      <div class="gradebook-actions">
+        <button class="btn-mini" id="saveDraftBtn">Save draft</button>
+        <button class="btn-mini btn-mini-primary" id="submitLockBtn">Submit &amp; lock</button>
+        <span class="gb-status" id="gbStatus">✓ Submitted and locked</span>
+      </div>
+    </div>
+
+    <div class="card card-wide">
+      <div class="icon">🗓</div>
+      <h3>Today's teaching schedule</h3>
+      <ul style="margin-top:12px;">
+        <li class="list-item"><span>SSS2A — Physics</span><span class="meta">8:00 – 8:40 · Lab 1</span></li>
+        <li class="list-item"><span>JSS3B — Basic Science</span><span class="meta">9:40 – 10:20 · Room 4</span></li>
+        <li class="list-item"><span>SSS2B — Physics</span><span class="meta">11:00 – 11:40 · Lab 1</span></li>
+      </ul>
+    </div>
+
+    <div class="card card-full">
+      <div class="icon">📣</div>
+      <h3>Staff announcements</h3>
+      <div class="announce"><span class="date">22 Jun 2026</span><p>Staff meeting Thursday 3pm — term planning.</p></div>
+      <div class="announce"><span class="date">17 Jun 2026</span><p>2nd term CA2 scores due on the portal by 28 June.</p></div>
+    </div>
+  </div>
+
+  <div class="proto-note" style="margin-bottom:50px;">
+    Prototype with sample data. In the live build every figure pulls from the school's real records.
+  </div>
+</div>
+
+<script>
+  /* ── URL params ── */
+  const params  = new URLSearchParams(window.location.search);
+  const role    = params.get('role') === 'teacher' ? 'teacher' : 'student';
+  const urlName = params.get('name') || (role === 'teacher' ? 'Teacher' : 'Student');
+  const urlId   = (params.get('id') || (role === 'teacher' ? 'CC-STF-002' : 'CC/2024/0145')).toUpperCase();
+
+  document.getElementById('roleBadge').textContent      = role === 'teacher' ? 'Teacher' : 'Student';
+  document.getElementById('welcomeHeading').textContent = `Welcome back, ${urlName}`;
+  document.getElementById('welcomeSub').textContent     = role === 'teacher'
+    ? 'Here are your form class, subjects and gradebook.'
+    : 'Select a term to view your results.';
+
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('dateLine').textContent =
+    `${DAYS[new Date().getDay()]} · ${role === 'teacher' ? 'Staff dashboard' : 'Student dashboard'}`;
+
+  document.getElementById(role === 'teacher' ? 'teacherView' : 'studentView')
+    .style.display = role === 'teacher' ? 'grid' : 'block';
+
+  /* ══════════════════════════════════════
+     MOCK DATA
+  ══════════════════════════════════════ */
+  const STUDENT_RESULTS = {
+    'CC/2024/0145': {
+      '1st': [
+        { name:'Mathematics',      ca1:14, ca2:13, ca3:12, exam:51, total:90 },
+        { name:'English Language', ca1:12, ca2:15, ca3:14, exam:40, total:81 },
+        { name:'Physics',          ca1:13, ca2:14, ca3:11, exam:38, total:76 },
+        { name:'Chemistry',        ca1:15, ca2:12, ca3:13, exam:40, total:80 },
+      ],
+      '2nd': [
+        { name:'Mathematics',      ca1:16, ca2:14, ca3:15, exam:45, total:90 },
+        { name:'English Language', ca1:14, ca2:16, ca3:13, exam:38, total:81 },
+        { name:'Physics',          ca1:11, ca2:13, ca3:14, exam:40, total:78 },
+        { name:'Chemistry',        ca1:15, ca2:14, ca3:12, exam:41, total:82 },
+      ],
+      '3rd': null,
+    },
+    'CC/2023/0089': {
+      '1st': [
+        { name:'Mathematics',      ca1:10, ca2:11, ca3:12, exam:44, total:77 },
+        { name:'English Language', ca1:13, ca2:12, ca3:11, exam:39, total:75 },
+      ],
+      '2nd': null,
+      '3rd': null,
+    }
+  };
+
+  const TERMS = ['1st','2nd','3rd'];
+  const ACTIVE_TERM = '2nd';
+
+  /* ══════════════════════════════════════
+     STUDENT — TERM TABS
+  ══════════════════════════════════════ */
+  if (role === 'student') showTerm('1st');
+
+  function showTerm(term) {
+    document.querySelectorAll('.term-tab').forEach(t =>
+      t.classList.toggle('active', t.dataset.term === term));
+
+    const data    = (STUDENT_RESULTS[urlId] || {});
+    const titleEl = document.getElementById('resultsTitle');
+    const subEl   = document.getElementById('resultsSub');
+    const cont    = document.getElementById('resultsContent');
+
+    if (term === 'annual') {
+      renderAnnual(data, titleEl, subEl, cont);
+      return;
+    }
+
+    titleEl.textContent = `${term} Term Results`;
+    const termData = data[term];
+
+    if (!termData) {
+      subEl.textContent = '';
+      cont.innerHTML = `
+        <div class="not-available">
+          <div class="na-icon">🔒</div>
+          <h4>Not available yet</h4>
+          <p>${term} Term results have not been published. Check back after end of term.</p>
+        </div>`;
+      return;
+    }
+
+    subEl.textContent = `${term} Term · 2025/2026 Session · SSS2`;
+    cont.innerHTML = `
+      <table>
+        <tr><th>Subject</th><th>CA1</th><th>CA2</th><th>CA3</th><th>Exam</th><th>Total /100</th></tr>
+        ${termData.map(s => `
+          <tr>
+            <td>${s.name}</td>
+            <td class="num">${s.ca1}</td>
+            <td class="num">${s.ca2}</td>
+            <td class="num">${s.ca3}</td>
+            <td class="num">${s.exam}</td>
+            <td class="total">${s.total}</td>
+          </tr>`).join('')}
+      </table>`;
+  }
+
+  function renderAnnual(data, titleEl, subEl, cont) {
+    titleEl.textContent = 'Annual Results';
+    const available = TERMS.filter(t => data[t]);
+
+    if (available.length < 3) {
+      const missing = TERMS.filter(t => !data[t]).map(t => `${t} Term`).join(', ');
+      subEl.textContent = '';
+      cont.innerHTML = `
+        <div class="not-available">
+          <div class="na-icon">📅</div>
+          <h4>Not available yet</h4>
+          <p>Annual results need all three terms. Still awaiting: <strong>${missing}</strong>.</p>
+        </div>`;
+      return;
+    }
+
+    subEl.textContent = '2025/2026 Session · Average across all three terms';
+    const subjects = data['1st'].map(s => s.name);
+    const rows = subjects.map(name => {
+      const totals = TERMS.map(t => (data[t].find(s => s.name === name) || {}).total || 0);
+      const avg = Math.round(totals.reduce((a,b) => a+b, 0) / 3);
+      return `<tr>
+        <td>${name}</td>
+        <td class="num">${totals[0]}</td>
+        <td class="num">${totals[1]}</td>
+        <td class="num">${totals[2]}</td>
+        <td class="total">${avg}</td>
+      </tr>`;
+    }).join('');
+
+    cont.innerHTML = `
+      <table>
+        <tr><th>Subject</th><th>1st Term</th><th>2nd Term</th><th>3rd Term</th><th>Average /100</th></tr>
+        ${rows}
+      </table>
+      <div class="annual-note">Annual average = (1st Term + 2nd Term + 3rd Term) ÷ 3</div>`;
+  }
+
+  /* ══════════════════════════════════════
+     TEACHER DATA
+  ══════════════════════════════════════ */
+  const CLASSES_DATA = {
+    'SSS2A': { formTeacher: 'CC-STF-002' },
+    'SSS2B': { formTeacher: null },
+    'JSS3B': { formTeacher: null },
+  };
+
+  const STUDENTS_BY_CLASS = {
+    'SSS2A': [
+      { name:'Ada Eze',           reg:'CC/2024/0145' },
+      { name:'Emeka Okafor',      reg:'CC/2023/0089' },
+      { name:'Chisom Nweke',      reg:'CC/2024/0032' },
+      { name:'Obiora Ani',        reg:'CC/2024/0078' },
+      { name:'Ngozi Ugwu',        reg:'CC/2024/0112' },
+    ],
+    'SSS2B': [
+      { name:'Kelechi Odo',       reg:'CC/2024/0201' },
+      { name:'Ifunanya Ezeh',     reg:'CC/2024/0188' },
+      { name:'Chukwuemeka Ibe',   reg:'CC/2024/0215' },
+      { name:'Adaeze Onah',       reg:'CC/2024/0233' },
+    ],
+    'JSS3B': [
+      { name:'Blessing Ogbu',     reg:'CC/2025/0045' },
+      { name:'Michael Okonkwo',   reg:'CC/2025/0067' },
+      { name:'Esther Nnamdi',     reg:'CC/2025/0089' },
+    ],
+  };
+
+  const TEACHER_SUBJECTS = {
+    'CC-STF-002': [
+      { subject:'Physics',       classes:['SSS2A','SSS2B'] },
+      { subject:'Basic Science', classes:['JSS3B'] },
+    ],
+  };
+
+  const gbScores  = {};
+  const gbLocked  = new Set();
+  let   activeKey = null;
+
+  if (role === 'teacher') buildTeacherDashboard(urlId);
+
+  function buildTeacherDashboard(tid) {
+    const formClass = Object.keys(CLASSES_DATA).find(k => CLASSES_DATA[k].formTeacher === tid);
+    if (formClass) {
+      const studs = STUDENTS_BY_CLASS[formClass] || [];
+      document.getElementById('formClassCard').style.display = 'block';
+      document.getElementById('formClassTag').textContent   = formClass;
+      document.getElementById('formClassSub').textContent   = `${studs.length} students enrolled`;
+      const tbl = document.getElementById('formClassTable');
+      studs.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${s.name}</td><td class="num">${s.reg}</td>`;
+        tbl.appendChild(tr);
+      });
+    }
+
+    const assignments = TEACHER_SUBJECTS[tid] || [];
+    const container   = document.getElementById('subjectGroups');
+    if (!assignments.length) {
+      container.innerHTML = '<p style="font-size:13.5px;color:var(--ink-soft);margin-top:10px;">No subjects assigned yet.</p>';
+      return;
+    }
+    assignments.forEach(({ subject, classes }) => {
+      const group = document.createElement('div');
+      group.className = 'subject-group';
+      const h4 = document.createElement('h4');
+      h4.textContent = subject;
+      group.appendChild(h4);
+      const chipRow = document.createElement('div');
+      chipRow.className = 'class-chip-row';
+      classes.forEach(cls => {
+        const key  = `${subject}||${cls}`;
+        const chip = document.createElement('button');
+        chip.className = 'class-chip';
+        chip.dataset.key = key;
+        chip.dataset.subject = subject;
+        chip.dataset.cls = cls;
+        setChipLabel(chip, cls, key);
+        chip.addEventListener('click', () => openGradebook(subject, cls, chip));
+        chipRow.appendChild(chip);
+      });
+      group.appendChild(chipRow);
+      container.appendChild(group);
+    });
+  }
+
+  function setChipLabel(chip, cls, key) {
+    chip.innerHTML = gbLocked.has(key) ? `${cls} <span style="font-size:11px;opacity:.7">🔒</span>` : cls;
+  }
+
+  function openGradebook(subject, cls, chip) {
+    const key    = `${subject}||${cls}`;
+    const studs  = STUDENTS_BY_CLASS[cls] || [];
+    const locked = gbLocked.has(key);
+    const saved  = gbScores[key] || {};
+
+    document.querySelectorAll('.class-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeKey = key;
+
+    document.getElementById('gbTitle').textContent    = `${subject} — ${cls}`;
+    document.getElementById('gbSub').textContent      = locked ? '🔒 Submitted and locked' : `${studs.length} students`;
+    document.getElementById('gbTermLabel').textContent = `${ACTIVE_TERM} Term · 2025/2026`;
+
+    const tbl = document.getElementById('gbTable');
+    while (tbl.rows.length > 1) tbl.deleteRow(1);
+    studs.forEach(s => {
+      const sc = saved[s.reg] || {};
+      const tr = document.createElement('tr');
+      const tot = calcTot(sc.ca1, sc.ca2, sc.ca3, sc.exam);
+      tr.innerHTML = `
+        <td>${s.name}</td>
+        <td class="num">${s.reg}</td>
+        <td><input class="score-input" type="number" min="0" max="20" value="${sc.ca1??''}" data-reg="${s.reg}" data-col="ca1" ${locked?'disabled':''}></td>
+        <td><input class="score-input" type="number" min="0" max="20" value="${sc.ca2??''}" data-reg="${s.reg}" data-col="ca2" ${locked?'disabled':''}></td>
+        <td><input class="score-input" type="number" min="0" max="20" value="${sc.ca3??''}" data-reg="${s.reg}" data-col="ca3" ${locked?'disabled':''}></td>
+        <td><input class="score-input" type="number" min="0" max="40" value="${sc.exam??''}" data-reg="${s.reg}" data-col="exam" ${locked?'disabled':''}></td>
+        <td class="total" data-reg="${s.reg}">${tot}</td>`;
+      tbl.appendChild(tr);
+    });
+
+    tbl.querySelectorAll('.score-input').forEach(inp =>
+      inp.addEventListener('input', () => {
+        const row = inp.closest('tr');
+        const v = {};
+        row.querySelectorAll('.score-input').forEach(i => { v[i.dataset.col] = i.value; });
+        if (!gbScores[key]) gbScores[key] = {};
+        if (!gbScores[key][inp.dataset.reg]) gbScores[key][inp.dataset.reg] = {};
+        gbScores[key][inp.dataset.reg][inp.dataset.col] = inp.value;
+        row.querySelector(`.total[data-reg="${inp.dataset.reg}"]`).textContent =
+          calcTot(v.ca1, v.ca2, v.ca3, v.exam);
+      }));
+
+    document.getElementById('saveDraftBtn').style.display  = locked ? 'none' : '';
+    document.getElementById('submitLockBtn').style.display = locked ? 'none' : '';
+    document.getElementById('gbStatus').className          = locked ? 'gb-status show' : 'gb-status';
+
+    const card = document.getElementById('gradebookCard');
+    card.style.display = 'block';
+    setTimeout(() => card.scrollIntoView({ behavior:'smooth', block:'nearest' }), 60);
+  }
+
+  function calcTot(ca1, ca2, ca3, exam) {
+    const s = [ca1,ca2,ca3,exam].reduce((a,v) => a+(parseFloat(v)||0), 0);
+    return s > 0 ? s : '—';
+  }
+
+  function collectScores() {
+    if (!activeKey) return;
+    document.getElementById('gbTable').querySelectorAll('.score-input').forEach(inp => {
+      if (!gbScores[activeKey]) gbScores[activeKey] = {};
+      if (!gbScores[activeKey][inp.dataset.reg]) gbScores[activeKey][inp.dataset.reg] = {};
+      gbScores[activeKey][inp.dataset.reg][inp.dataset.col] = inp.value;
+    });
+  }
+
+  document.getElementById('saveDraftBtn').addEventListener('click', () => {
+    collectScores();
+    const btn = document.getElementById('saveDraftBtn');
+    btn.textContent = '✓ Draft saved';
+    setTimeout(() => { btn.textContent = 'Save draft'; }, 1800);
+  });
+
+  document.getElementById('submitLockBtn').addEventListener('click', () => {
+    if (!confirm('Submit and lock these scores?\nYou will not be able to edit them after this.')) return;
+    collectScores();
+    gbLocked.add(activeKey);
+    document.getElementById('gbTable').querySelectorAll('.score-input').forEach(i => { i.disabled = true; });
+    document.getElementById('saveDraftBtn').style.display  = 'none';
+    document.getElementById('submitLockBtn').style.display = 'none';
+    document.getElementById('gbStatus').className          = 'gb-status show';
+    document.getElementById('gbSub').textContent           = '🔒 Submitted and locked';
+    const chip = document.querySelector(`.class-chip[data-key="${activeKey}"]`);
+    if (chip) setChipLabel(chip, chip.dataset.cls, activeKey);
+  });
+</script>
+</body>
+</html>

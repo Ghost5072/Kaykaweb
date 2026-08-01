@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crestview College, Nsukka — Prototype</title>
+<meta name="description" content="Crestview College, Nsukka — a co-educational secondary school offering Science, Arts and Commercial programmes.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --navy:#142440;
+    --navy-deep:#0b1730;
+    --gold:#c89b3c;
+    --gold-light:#e6c878;
+    --paper:#f5efe0;
+    --paper-deep:#eadfc2;
+    --ink:#20242c;
+    --ink-soft:#5a6070;
+    --white:#fffdf8;
+    --green:#2f6b4f;
+    --radius:14px;
+    --shadow:0 18px 40px -20px rgba(11,23,48,0.35);
+    --maxw:1180px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{margin:0;padding:0;list-style:none;}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;margin:0;color:var(--navy);font-weight:700;}
+  p{margin:0;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  :focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--gold);
+  }
+  .section{padding:88px 0;}
+  .section-head{max-width:620px;margin-bottom:48px;}
+  .section-head h2{font-size:clamp(28px,4vw,40px);margin-top:10px;line-height:1.15;}
+  .section-head p{margin-top:14px;color:var(--ink-soft);font-size:16.5px;}
+  .section-alt{background:var(--white);}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 24px;border-radius:999px;
+    font-weight:600;font-size:15px;
+    border:1.5px solid transparent;
+    cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-primary{background:var(--gold);color:var(--navy-deep);}
+  .btn-primary:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(200,155,60,0.6);}
+  .btn-ghost{border-color:rgba(255,255,255,0.4);color:var(--white);}
+  .btn-ghost:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px);}
+  .btn-outline{border-color:var(--navy);color:var(--navy);}
+  .btn-outline:hover{background:var(--navy);color:var(--white);}
+
+  /* ---------- Utility bar (portal access) ---------- */
+  .utility-bar{background:var(--navy-deep);color:rgba(255,253,248,0.85);font-size:13px;}
+  .utility-inner{display:flex;justify-content:space-between;align-items:center;padding:9px 24px;flex-wrap:wrap;gap:8px;max-width:var(--maxw);margin:0 auto;}
+  .utility-text{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,253,248,0.5);}
+  .utility-link{font-weight:600;color:var(--gold-light);display:inline-flex;align-items:center;gap:6px;font-size:13.5px;}
+  .utility-link:hover{color:var(--white);}
+  .utility-link .arrow{transition:transform .15s ease;}
+  .utility-link:hover .arrow{transform:translateX(3px);}
+  @media (max-width:720px){
+    .utility-text{display:none;}
+    .utility-inner{justify-content:center;}
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(245,239,224,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--paper-deep);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;max-width:var(--maxw);margin:0 auto;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-name{font-family:'Fraunces',serif;font-weight:700;font-size:18px;line-height:1.1;color:var(--navy);}
+  .brand-name span{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--ink-soft);font-weight:500;text-transform:uppercase;}
+  .nav-links{display:flex;gap:30px;align-items:center;}
+  .nav-links a{font-size:14.5px;font-weight:600;color:var(--ink);position:relative;padding:4px 0;}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-2px;width:0;height:2px;background:var(--gold);transition:width .2s ease;}
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{display:flex;gap:10px;align-items:center;}
+  .nav-cta .btn{padding:10px 18px;font-size:13.5px;}
+  .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{display:block;width:24px;height:2px;background:var(--navy);margin:5px 0;transition:.2s;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    background:var(--navy);
+    color:var(--white);
+    padding:90px 0 70px;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      radial-gradient(circle at 85% 20%, rgba(200,155,60,0.18), transparent 45%),
+      radial-gradient(circle at 10% 90%, rgba(200,155,60,0.10), transparent 40%);
+    pointer-events:none;
+  }
+  .hero-crest{
+    position:absolute;right:-60px;top:50%;transform:translateY(-50%);
+    width:420px;height:420px;opacity:0.07;pointer-events:none;
+  }
+  .hero-inner{position:relative;display:grid;grid-template-columns:1fr;gap:30px;}
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);
+    padding:7px 14px;border-radius:999px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;
+    color:var(--gold-light);margin-bottom:22px;
+    width:fit-content;
+  }
+  .hero h1{
+    font-size:clamp(36px,6vw,58px);
+    color:var(--white);
+    line-height:1.06;
+    max-width:780px;
+  }
+  .hero h1 em{color:var(--gold-light);font-style:normal;}
+  .hero-tagline{
+    margin-top:18px;font-size:18px;max-width:560px;color:rgba(255,253,248,0.78);
+  }
+  .hero-actions{margin-top:34px;display:flex;flex-wrap:wrap;gap:14px;}
+
+  /* ---------- Result strip (signature element) ---------- */
+  .result-strip{
+    background:var(--white);
+    border:1px solid var(--paper-deep);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin-top:54px;
+    padding:0;
+    overflow:hidden;
+  }
+  .result-strip-head{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 22px;border-bottom:1px dashed var(--paper-deep);
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);
+  }
+  .result-strip-head strong{color:var(--navy);}
+  .result-grid{display:grid;grid-template-columns:repeat(4,1fr);}
+  .result-cell{
+    padding:22px;text-align:left;border-left:1px solid var(--paper-deep);
+  }
+  .result-cell:first-child{border-left:none;}
+  .result-cell .num{font-family:'IBM Plex Mono',monospace;font-size:clamp(22px,3vw,30px);font-weight:600;color:var(--navy);}
+  .result-cell .label{margin-top:6px;font-size:12.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;}
+
+  /* ---------- About ---------- */
+  .about-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:54px;align-items:center;}
+  .principal-card{
+    background:var(--navy);border-radius:var(--radius);padding:32px;color:var(--white);
+    position:relative;overflow:hidden;
+  }
+  .principal-photo{
+    width:84px;height:84px;border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--gold-light));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:700;font-size:28px;color:var(--navy-deep);
+    margin-bottom:18px;
+  }
+  .principal-card h4{color:var(--white);font-size:19px;}
+  .principal-card .role{color:var(--gold-light);font-size:13px;margin-top:2px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;}
+  .principal-card p{margin-top:16px;color:rgba(255,253,248,0.82);font-size:15px;}
+  .about-copy p{color:var(--ink-soft);font-size:16px;margin-top:14px;}
+  .about-copy p:first-child{margin-top:0;}
+  .ruled{
+    margin-top:26px;padding-top:22px;
+    background-image:repeating-linear-gradient(to bottom, transparent, transparent 27px, var(--paper-deep) 28px);
+  }
+  .ruled-list{display:grid;gap:0;}
+  .ruled-list li{padding:8px 0 8px 22px;position:relative;font-size:15px;color:var(--ink);}
+  .ruled-list li::before{content:"";position:absolute;left:0;top:16px;width:8px;height:8px;border-radius:50%;background:var(--gold);}
+
+  /* ---------- Academics ---------- */
+  .dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .dept-card{
+    background:var(--white);border:1px solid var(--paper-deep);border-radius:var(--radius);
+    padding:28px;position:relative;transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .dept-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
+  .dept-card::before{
+    content:"";position:absolute;top:0;left:28px;width:34px;height:6px;background:var(--gold);border-radius:0 0 6px 6px;
+  }
+  .dept-card .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+  .dept-card h3{margin-top:10px;font-size:21px;}
+  .dept-card ul{margin-top:14px;display:grid;gap:8px;}
+  .dept-card li{font-size:14.5px;color:var(--ink-soft);padding-left:16px;position:relative;}
+  .dept-card li::before{content:"—";position:absolute;left:0;color:var(--gold);}
+
+  /* ---------- Why us ---------- */
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .why-card{padding:26px 22px;border-radius:var(--radius);background:var(--paper);border:1px solid var(--paper-deep);}
+  .why-card .icon{
+    width:44px;height:44px;border-radius:10px;background:var(--navy);
+    display:flex;align-items:center;justify-content:center;color:var(--gold-light);font-size:19px;margin-bottom:14px;
+  }
+  .why-card h4{font-size:17px;}
+  .why-card p{margin-top:8px;font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- Admissions ---------- */
+  .admissions{background:var(--navy);color:var(--white);}
+  .admissions .section-head h2{color:var(--white);}
+  .admissions .section-head p{color:rgba(255,253,248,0.7);}
+  .admissions .eyebrow{color:var(--gold-light);}
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;}
+  .steps::before{content:"";position:absolute;top:22px;left:6%;right:6%;height:1px;background:rgba(255,255,255,0.18);}
+  .step{position:relative;padding:0 14px;text-align:left;}
+  .step-num{
+    width:44px;height:44px;border-radius:50%;background:var(--navy-deep);border:1.5px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--gold-light);margin-bottom:16px;position:relative;z-index:1;
+  }
+  .step h4{color:var(--white);font-size:15.5px;margin-top:0;}
+  .step p{color:rgba(255,253,248,0.65);font-size:13.5px;margin-top:6px;}
+  .admissions-cta{
+    margin-top:48px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);
+    border-radius:var(--radius);padding:26px 28px;
+  }
+  .admissions-cta .fee{font-family:'IBM Plex Mono',monospace;color:var(--gold-light);font-size:13px;letter-spacing:.05em;}
+
+  /* ---------- Gallery ---------- */
+  .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .gallery-item{
+    aspect-ratio:1/1;border-radius:12px;display:flex;align-items:flex-end;padding:16px;
+    color:var(--white);font-weight:600;font-size:14px;position:relative;overflow:hidden;
+  }
+  .gallery-item::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(11,23,48,0.6), transparent 60%);}
+  .gallery-item span{position:relative;z-index:1;}
+  .g1{background:linear-gradient(135deg,#1c3358,#142440);}
+  .g2{background:linear-gradient(135deg,#c89b3c,#a87f2c);}
+  .g3{background:linear-gradient(135deg,#2f6b4f,#1f4d38);}
+  .g4{background:linear-gradient(135deg,#3a4a6b,#142440);}
+  .gallery-note{margin-top:18px;font-size:13.5px;color:var(--ink-soft);font-style:italic;}
+
+  /* ---------- News ---------- */
+  .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .news-card{background:var(--white);border:1px solid var(--paper-deep);border-radius:var(--radius);overflow:hidden;}
+  .news-thumb{height:120px;background:linear-gradient(135deg,var(--navy),var(--navy-deep));}
+  .news-body{padding:22px;}
+  .news-date{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;}
+  .news-card h4{margin-top:10px;font-size:16.5px;line-height:1.3;}
+
+  /* ---------- Testimonial ---------- */
+  .testimonial{
+    background:var(--paper-deep);border-radius:var(--radius);padding:48px;text-align:center;max-width:780px;margin:0 auto;
+  }
+  .testimonial p{font-family:'Fraunces',serif;font-size:clamp(19px,2.4vw,24px);color:var(--navy);line-height:1.45;}
+  .testimonial .who{margin-top:18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+  .contact-info li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--paper-deep);}
+  .contact-info .ic{
+    width:38px;height:38px;border-radius:9px;background:var(--navy);color:var(--gold-light);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;
+  }
+  .contact-info .ttl{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+  .contact-info .val{font-weight:600;margin-top:2px;}
+  .map-box{
+    border-radius:var(--radius);overflow:hidden;border:1px solid var(--paper-deep);min-height:280px;
+  }
+  .map-box iframe{width:100%;height:100%;min-height:280px;border:0;display:block;}
+  .form{display:grid;gap:14px;}
+  .form input,.form textarea{
+    width:100%;padding:13px 16px;border-radius:10px;border:1.5px solid var(--paper-deep);
+    background:var(--white);font-family:'Inter',sans-serif;font-size:14.5px;color:var(--ink);
+  }
+  .form textarea{resize:vertical;min-height:100px;}
+  .form-note{font-size:12.5px;color:var(--ink-soft);}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--navy-deep);color:rgba(255,253,248,0.65);padding:56px 0 28px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+  .foot-brand{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
+  .foot-brand .brand-name{color:var(--white);}
+  .foot-brand .brand-name span{color:rgba(255,253,248,0.5);}
+  footer h5{font-family:'IBM Plex Mono',monospace;color:var(--gold-light);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+  footer ul li{margin-bottom:10px;font-size:14px;}
+  footer ul li a:hover{color:var(--gold-light);}
+  .foot-bottom{
+    border-top:1px solid rgba(255,255,255,0.1);padding-top:22px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;
+  }
+
+  /* ---------- WhatsApp float ---------- */
+  .wa-float{
+    position:fixed;right:20px;bottom:20px;z-index:60;
+    width:58px;height:58px;border-radius:50%;background:#25D366;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 12px 28px -8px rgba(0,0,0,0.45);
+    transition:transform .15s ease;
+  }
+  .wa-float:hover{transform:scale(1.08);}
+
+  /* ---------- Reveal animation ---------- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:960px){
+    .about-grid{grid-template-columns:1fr;}
+    .dept-grid{grid-template-columns:1fr 1fr;}
+    .why-grid{grid-template-columns:1fr 1fr;}
+    .news-grid{grid-template-columns:1fr 1fr;}
+    .result-grid{grid-template-columns:1fr 1fr;}
+    .result-cell:nth-child(3){border-left:none;}
+    .result-cell:nth-child(odd){border-left:none;}
+    .steps{grid-template-columns:1fr 1fr;gap:24px;}
+    .steps::before{display:none;}
+    .contact-grid{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:720px){
+    .nav-links{
+      position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--paper);
+      flex-direction:column;align-items:flex-start;padding:28px 24px;gap:22px;
+      transform:translateX(100%);transition:transform .25s ease;
+    }
+    .nav-links.open{transform:translateX(0);}
+    .hamburger{display:block;}
+    .nav-cta .btn-outline{display:none;}
+    .dept-grid{grid-template-columns:1fr;}
+    .why-grid{grid-template-columns:1fr;}
+    .news-grid{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:1fr 1fr;}
+    .result-grid{grid-template-columns:1fr 1fr;}
+    .foot-grid{grid-template-columns:1fr;}
+    .section{padding:64px 0;}
+    .testimonial{padding:30px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ UTILITY BAR (portal access) ============ -->
+<div class="utility-bar">
+  <div class="utility-inner">
+    <span class="utility-text">For current students &amp; staff</span>
+    <a href="portal-login.html" class="utility-link">Student or Teacher? Head to the portal <span class="arrow" aria-hidden="true">→</span></a>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="nav">
+    <div class="brand">
+      <svg width="38" height="38" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M50 4 L92 20 V52 C92 76 73 92 50 98 C27 92 8 76 8 52 V20 Z" fill="#142440" stroke="#c89b3c" stroke-width="3"/>
+        <text x="50" y="62" font-family="Fraunces, serif" font-size="34" font-weight="700" fill="#e6c878" text-anchor="middle">CC</text>
+      </svg>
+      <div class="brand-name">Crestview College<span>Nsukka, Enugu State</span></div>
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="#academics">Academics</a>
+      <a href="#admissions">Admissions</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#news">News</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#admissions" class="btn btn-outline">Apply Now</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <svg class="hero-crest" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M50 4 L92 20 V52 C92 76 73 92 50 98 C27 92 8 76 8 52 V20 Z" fill="none" stroke="#e6c878" stroke-width="2"/>
+  </svg>
+  <div class="wrap hero-inner">
+    <span class="hero-badge">● Admissions open — 2026/2027 session</span>
+    <h1>Where Nsukka's children learn to <em>lead, not just pass.</em></h1>
+    <p class="hero-tagline">Crestview College is a co-educational secondary school offering Science, Arts and Commercial programmes — built on strong WAEC/NECO results, small classes, and teachers who know every student by name.</p>
+    <div class="hero-actions">
+      <a href="#admissions" class="btn btn-primary">Apply for Admission</a>
+      <a href="#" class="btn btn-ghost">💬 Chat with us on WhatsApp</a>
+    </div>
+
+    <div class="result-strip">
+      <div class="result-strip-head">
+        <span>Crestview College — at a glance</span>
+        <strong>Reg. No. EN/SS/0427</strong>
+      </div>
+      <div class="result-grid">
+        <div class="result-cell"><div class="num">1989</div><div class="label">Established</div></div>
+        <div class="result-cell"><div class="num">94%</div><div class="label">WASSCE pass rate</div></div>
+        <div class="result-cell"><div class="num">18:1</div><div class="label">Student : teacher ratio</div></div>
+        <div class="result-cell"><div class="num">3</div><div class="label">Core programmes</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about">
+  <div class="wrap about-grid">
+    <div class="principal-card reveal">
+      <div class="principal-photo">PN</div>
+      <h4>Mrs. P. Nwosu</h4>
+      <div class="role">Principal, Crestview College</div>
+      <p>"We don't just prepare students for an exam. We prepare them for the life that comes after it — and that starts with knowing each child by name, not by number."</p>
+    </div>
+    <div class="about-copy reveal">
+      <span class="eyebrow">About the school</span>
+      <h2 style="margin-top:10px;font-size:clamp(26px,3.6vw,34px);">Thirty-five years of forming young people in Nsukka</h2>
+      <p>Crestview College runs JSS1 through SSS3 on one campus along Enugu Road, Nsukka, offering day and limited boarding placements. Our curriculum follows the national standard while preparing students directly for WASSCE, NECO and JAMB.</p>
+      <p>Class sizes are kept deliberately small so teachers can give real attention to every student — academically, but also in character, discipline, and confidence.</p>
+      <div class="ruled">
+        <ul class="ruled-list">
+          <li>Qualified, NCE/B.Ed-certified teaching staff in every department</li>
+          <li>Functional science laboratories and a computer studies centre</li>
+          <li>Active sports house system, clubs and societies</li>
+          <li>On-site pastoral care, counselling and a resident matron</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACADEMICS ============ -->
+<section class="section section-alt" id="academics">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Academics</span>
+      <h2>Three programmes, one standard of excellence</h2>
+      <p>From JSS1, students follow a broad common curriculum. From SSS1, they choose one of three tracks — each designed around WAEC and NECO subject requirements.</p>
+    </div>
+    <div class="dept-grid">
+      <div class="dept-card reveal">
+        <span class="tag">Science track</span>
+        <h3>Sciences</h3>
+        <ul>
+          <li>Physics, Chemistry, Biology</li>
+          <li>Further Mathematics</li>
+          <li>Agricultural Science</li>
+          <li>Computer Studies</li>
+        </ul>
+      </div>
+      <div class="dept-card reveal">
+        <span class="tag">Humanities track</span>
+        <h3>Arts</h3>
+        <ul>
+          <li>Literature-in-English</li>
+          <li>Government &amp; History</li>
+          <li>CRS / IRS</li>
+          <li>Fine Art &amp; French</li>
+        </ul>
+      </div>
+      <div class="dept-card reveal">
+        <span class="tag">Business track</span>
+        <h3>Commercial</h3>
+        <ul>
+          <li>Financial Accounting</li>
+          <li>Commerce &amp; Economics</li>
+          <li>Office Practice</li>
+          <li>Marketing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY US ============ -->
+<section class="section" id="why">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why parents choose Crestview</span>
+      <h2>What you're really paying for</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="icon">★</div>
+        <h4>Consistent results</h4>
+        <p>94% WASSCE pass rate over the last 3 sessions, with credit passes in Maths and English.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="icon">🛡</div>
+        <h4>Safe, supervised campus</h4>
+        <p>Gated compound, daily attendance tracking, and staff on-site from 7am to closing.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="icon">🎓</div>
+        <h4>Beyond the classroom</h4>
+        <p>Debate club, JETS club, football and athletics, and an annual cultural day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ADMISSIONS ============ -->
+<section class="section admissions" id="admissions">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Admissions</span>
+      <h2>How to apply</h2>
+      <p>Forms for the 2026/2027 session are on sale now at the school office and online. Here's what the process looks like, start to finish.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="step-num">01</div><h4>Get the form</h4><p>Pick up at the school office, or fill the form online.</p></div>
+      <div class="step reveal"><div class="step-num">02</div><h4>Submit documents</h4><p>Birth certificate, last school report, 2 passport photos.</p></div>
+      <div class="step reveal"><div class="step-num">03</div><h4>Entrance exam</h4><p>Maths, English and General Studies — held on campus.</p></div>
+      <div class="step reveal"><div class="step-num">04</div><h4>Interview</h4><p>Short interview with the student and a parent/guardian.</p></div>
+      <div class="step reveal"><div class="step-num">05</div><h4>Admission letter</h4><p>Successful candidates pay the acceptance fee to secure a place.</p></div>
+    </div>
+    <div class="admissions-cta reveal">
+      <div>
+        <h4 style="color:#fff;font-size:18px;">Ready to apply for your child?</h4>
+        <p class="fee">FORM FEE: ₦5,000 &nbsp;·&nbsp; ENTRANCE EXAM: SAT 8 AUG 2026</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="#" class="btn btn-primary">Download Form (PDF)</a>
+        <a href="#" class="btn btn-ghost">💬 Ask a question</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="section" id="gallery">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Campus life</span>
+      <h2>A look around Crestview</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item g1 reveal"><span>Inter-House Sports</span></div>
+      <div class="gallery-item g2 reveal"><span>Cultural Day</span></div>
+      <div class="gallery-item g3 reveal"><span>Science Fair</span></div>
+      <div class="gallery-item g4 reveal"><span>SSS3 Graduation</span></div>
+    </div>
+    <p class="gallery-note">— Placeholder tiles shown here. In the final build, these are replaced with the school's own event photos.</p>
+  </div>
+</section>
+
+<!-- ============ NEWS ============ -->
+<section class="section section-alt" id="news">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">News &amp; events</span>
+      <h2>What's happening this term</h2>
+    </div>
+    <div class="news-grid">
+      <div class="news-card reveal">
+        <div class="news-thumb"></div>
+        <div class="news-body">
+          <span class="news-date">8 Jul 2026</span>
+          <h4>2026/2027 admission forms now on sale</h4>
+        </div>
+      </div>
+      <div class="news-card reveal">
+        <div class="news-thumb"></div>
+        <div class="news-body">
+          <span class="news-date">22 Jun 2026</span>
+          <h4>Crestview wins Inter-House Sports Cup</h4>
+        </div>
+      </div>
+      <div class="news-card reveal">
+        <div class="news-thumb"></div>
+        <div class="news-body">
+          <span class="news-date">15 Jun 2026</span>
+          <h4>JSS3 &amp; SSS3 mock exams begin Monday</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIAL ============ -->
+<section class="section">
+  <div class="wrap">
+    <div class="testimonial reveal">
+      <p>"My daughter has grown so much in confidence since she joined Crestview. The teachers actually know her by name — and it shows in her results."</p>
+      <div class="who">— Parent of an SSS2 student</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section section-alt" id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Get in touch</span>
+      <h2>Visit, call or message us</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <ul class="contact-info">
+          <li><div class="ic">📍</div><div><div class="ttl">Address</div><div class="val">Off Enugu Road, Nsukka, Enugu State</div></div></li>
+          <li><div class="ic">📞</div><div><div class="ttl">Phone</div><div class="val">+234 80X XXX XXXX</div></div></li>
+          <li><div class="ic">💬</div><div><div class="ttl">WhatsApp</div><div class="val">Chat with the school office</div></div></li>
+          <li><div class="ic">✉</div><div><div class="ttl">Email</div><div class="val">info@crestviewcollege-ng.com</div></div></li>
+        </ul>
+        <div class="map-box" style="margin-top:20px;">
+          <iframe src="https://www.google.com/maps?q=Nsukka,Enugu%20State,Nigeria&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map of Nsukka, Enugu State"></iframe>
+        </div>
+      </div>
+      <form class="form reveal" onsubmit="return false;">
+        <input type="text" placeholder="Parent / guardian name" required>
+        <input type="tel" placeholder="Phone number" required>
+        <input type="text" placeholder="Subject (e.g. Admission enquiry)">
+        <textarea placeholder="Your message"></textarea>
+        <button type="submit" class="btn btn-primary" style="justify-self:start;">Send message</button>
+        <span class="form-note">Demo form — not yet connected. In the live build, this sends straight to the school office's WhatsApp or email.</span>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">
+          <svg width="32" height="32" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M50 4 L92 20 V52 C92 76 73 92 50 98 C27 92 8 76 8 52 V20 Z" fill="none" stroke="#c89b3c" stroke-width="3"/>
+            <text x="50" y="62" font-family="Fraunces, serif" font-size="34" font-weight="700" fill="#e6c878" text-anchor="middle">CC</text>
+          </svg>
+          <div class="brand-name">Crestview College<span>Nsukka, Enugu State</span></div>
+        </div>
+        <p style="max-width:280px;font-size:14px;">A co-educational secondary school committed to academic excellence and strong character, since 1989.</p>
+      </div>
+      <div>
+        <h5>Quick links</h5>
+        <ul>
+          <li><a href="#about">About the school</a></li>
+          <li><a href="#academics">Academic programmes</a></li>
+          <li><a href="#admissions">Admissions</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Connect</h5>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Crestview College, Nsukka. All rights reserved.</span>
+      <span>Site design &amp; build — <strong>[Your Studio Name]</strong></span>
+    </div>
+  </div>
+</footer>
+
+<a href="#" class="wa-float" aria-label="Chat on WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.81 14.05c-.24.68-1.4 1.3-1.93 1.38-.49.08-1.11.11-1.79-.11-.41-.13-.94-.3-1.62-.59-2.85-1.23-4.71-4.1-4.85-4.29-.14-.19-1.16-1.54-1.16-2.94s.73-2.09 1-2.38c.26-.28.57-.35.76-.35.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.35 1.46.29.15.46.13.63-.08.17-.21.71-.83.9-1.11.19-.29.38-.24.64-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.69-.17 1.37z"/></svg>
+</a>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', false);
+  }));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); observer.unobserve(e.target); } });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
